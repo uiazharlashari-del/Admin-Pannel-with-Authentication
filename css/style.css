@@ -37,12 +37,12 @@ body {
 
 .auth-brand i {
     font-size: 48px;
-    color: #1a7a1a;
+    color: #0f4c7e;
 }
 
 .auth-brand h1 {
     font-size: 28px;
-    color: #1a5c1a;
+    color: #0e337d;
     margin-top: 10px;
 }
 
@@ -237,7 +237,7 @@ button[type="submit"]:active {
 /* ========== SIDEBAR ========== */
 .sidebar {
     width: 280px;
-    background: #0d3d0d;
+    background: #081a63;
     color: #ffffff;
     display: flex;
     flex-direction: column;

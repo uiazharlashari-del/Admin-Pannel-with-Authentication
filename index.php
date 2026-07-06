@@ -19,7 +19,7 @@ if ($isLoggedIn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureAuth - Green Theme</title>
+    <title>Gexton Academy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -30,7 +30,7 @@ if ($isLoggedIn) {
             <div class="auth-container">
                 <div class="auth-brand">
                     <i class="fas fa-shield-alt"></i>
-                    <h1>SecureAuth</h1>
+                    <h1>Gexton Academy</h1>
                     <p>Green Authentication System</p>
                 </div>
                 
@@ -149,7 +149,7 @@ if ($isLoggedIn) {
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-brand">
                     <i class="fas fa-shield-alt"></i>
-                    <span>SecureAuth</span>
+                    <span>Gexton Academy</span>
                 </div>
                 
                 <div class="sidebar-user">

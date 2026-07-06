@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f4f0; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #1a7a1a; color: white; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        tr:hover { background: #f5faf5; }
+        .user-thumb { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { color: #e74c3c; text-align: center; padding: 40px; }
+        .success { color: #27ae60; }
+        .stats { background: #e8f0e8; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .stats span { font-weight: bold; color: #1a7a1a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 User List Test</h1>
+        
+        <div class="stats">
+            <strong>Status:</strong> <span id="status">Loading...</span>
+        </div>
+        
+        <div id="result">
+            <div class="loading">⏳ Loading users...</div>
+        </div>
+    </div>
+
+    <script>
+        console.log('=== TEST PAGE STARTED ===');
+        
+        async function loadUsers() {
+            const resultDiv = document.getElementById('result');
+            const statusSpan = document.getElementById('status');
+            
+            try {
+                console.log('📡 Fetching users...');
+                statusSpan.textContent = 'Fetching data...';
+                
+                const response = await fetch('get_users.php');
+                console.log('📡 Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('📡 Data received:', data);
+                
+                if (data.success) {
+                    console.log('✅ Success! Users found:', data.users.length);
+                    statusSpan.textContent = '✅ Loaded ' + data.total + ' users';
+                    statusSpan.style.color = '#27ae60';
+                    
+                    displayUsers(data.users, data.total, data.today);
+                } else {
+                    console.error('❌ API Error:', data.message);
+                    statusSpan.textContent = '❌ Error: ' + data.message;
+                    statusSpan.style.color = '#e74c3c';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ❌ ${data.message}
+                            <br><small>Check console for details</small>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Fetch Error:', error);
+                statusSpan.textContent = '❌ Error: ' + error.message;
+                statusSpan.style.color = '#e74c3c';
+                
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ ${error.message}
+                        <br><small>Check console for details</small>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayUsers(users, total, today) {
+            const resultDiv = document.getElementById('result');
+            
+            if (!users || users.length === 0) {
+                resultDiv.innerHTML = `
+                    <div style="text-align:center;padding:40px;color:#888;">
+                        <h2>📭 No users found</h2>
+                        <p>Register a new user to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap;">
+                    <div style="background:#e8f0e8;padding:15px 25px;border-radius:8px;">
+                        <strong>Total Users:</strong> <span style="color:#1a7a1a;font-size:20px;">${total}</span>
+                    </div>
+                    <div style="background:#e8f0e8;padding:15px 25px;border-radius:8px;">
+                        <strong>New Today:</strong> <span style="color:#1a7a1a;font-size:20px;">${today}</span>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>Country</th>
+                            <th>Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach(user => {
+                const image = user.profile_image || 'default.png';
+                html += `
+                    <tr>
+                        <td>
+                            <img src="uploads/${image}" class="user-thumb" 
+                                 onerror="this.src='uploads/default.png'">
+                        </td>
+                        <td><strong>${escapeHtml(user.full_name)}</strong></td>
+                        <td>${escapeHtml(user.email)}</td>
+                        <td>${escapeHtml(user.gender)}</td>
+                        <td>${escapeHtml(user.country)}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                <p style="margin-top:10px;color:#888;">
+                    ✅ Showing ${users.length} user(s)
+                </p>
+            `;
+            
+            resultDiv.innerHTML = html;
+            console.log('✅ Table rendered with', users.length, 'users');
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Load users when page loads
+        document.addEventListener('DOMContentLoaded', loadUsers);
+        
+        console.log('=== TEST PAGE READY ===');
+    </script>
+</body>
+</html>
